@@ -1,0 +1,1185 @@
+Resources:
+  demoVpcB3478920:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: default
+      Tags:
+        - Key: Name
+          Value: eks-cicd-codebuild-stack/demo/Vpc
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/Resource
+  demoVpcPublicSubnet1SubnetC6CE0160:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.0.0/19
+      VpcId:
+        Ref: demoVpcB3478920
+      AvailabilityZone: us-east-2a
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Public
+        - Key: aws-cdk:subnet-type
+          Value: Public
+        - Key: kubernetes.io/role/elb
+          Value: "1"
+        - Key: Name
+          Value: eks-cicd-codebuild-stack/demo/Vpc/PublicSubnet1
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PublicSubnet1/Subnet
+  demoVpcPublicSubnet1RouteTable4BCDF6B0:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: demoVpcB3478920
+      Tags:
+        - Key: kubernetes.io/role/elb
+          Value: "1"
+        - Key: Name
+          Value: eks-cicd-codebuild-stack/demo/Vpc/PublicSubnet1
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PublicSubnet1/RouteTable
+  demoVpcPublicSubnet1RouteTableAssociation7036D9B6:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: demoVpcPublicSubnet1RouteTable4BCDF6B0
+      SubnetId:
+        Ref: demoVpcPublicSubnet1SubnetC6CE0160
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PublicSubnet1/RouteTableAssociation
+  demoVpcPublicSubnet1DefaultRoute496F6A2B:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: demoVpcPublicSubnet1RouteTable4BCDF6B0
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: demoVpcIGWFCF34DB8
+    DependsOn:
+      - demoVpcVPCGW0C6E1A88
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PublicSubnet1/DefaultRoute
+  demoVpcPublicSubnet1EIP53B5E3EC:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: kubernetes.io/role/elb
+          Value: "1"
+        - Key: Name
+          Value: eks-cicd-codebuild-stack/demo/Vpc/PublicSubnet1
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PublicSubnet1/EIP
+  demoVpcPublicSubnet1NATGateway80CECA1F:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      SubnetId:
+        Ref: demoVpcPublicSubnet1SubnetC6CE0160
+      AllocationId:
+        Fn::GetAtt:
+          - demoVpcPublicSubnet1EIP53B5E3EC
+          - AllocationId
+      Tags:
+        - Key: kubernetes.io/role/elb
+          Value: "1"
+        - Key: Name
+          Value: eks-cicd-codebuild-stack/demo/Vpc/PublicSubnet1
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PublicSubnet1/NATGateway
+  demoVpcPublicSubnet2SubnetDCB04C5F:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.32.0/19
+      VpcId:
+        Ref: demoVpcB3478920
+      AvailabilityZone: us-east-2b
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Public
+        - Key: aws-cdk:subnet-type
+          Value: Public
+        - Key: kubernetes.io/role/elb
+          Value: "1"
+        - Key: Name
+          Value: eks-cicd-codebuild-stack/demo/Vpc/PublicSubnet2
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PublicSubnet2/Subnet
+  demoVpcPublicSubnet2RouteTableB4CC0633:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: demoVpcB3478920
+      Tags:
+        - Key: kubernetes.io/role/elb
+          Value: "1"
+        - Key: Name
+          Value: eks-cicd-codebuild-stack/demo/Vpc/PublicSubnet2
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PublicSubnet2/RouteTable
+  demoVpcPublicSubnet2RouteTableAssociation47E95421:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: demoVpcPublicSubnet2RouteTableB4CC0633
+      SubnetId:
+        Ref: demoVpcPublicSubnet2SubnetDCB04C5F
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PublicSubnet2/RouteTableAssociation
+  demoVpcPublicSubnet2DefaultRouteA4208AF0:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: demoVpcPublicSubnet2RouteTableB4CC0633
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: demoVpcIGWFCF34DB8
+    DependsOn:
+      - demoVpcVPCGW0C6E1A88
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PublicSubnet2/DefaultRoute
+  demoVpcPublicSubnet3Subnet7B3157BB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.64.0/19
+      VpcId:
+        Ref: demoVpcB3478920
+      AvailabilityZone: us-east-2c
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Public
+        - Key: aws-cdk:subnet-type
+          Value: Public
+        - Key: kubernetes.io/role/elb
+          Value: "1"
+        - Key: Name
+          Value: eks-cicd-codebuild-stack/demo/Vpc/PublicSubnet3
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PublicSubnet3/Subnet
+  demoVpcPublicSubnet3RouteTable62FF7669:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: demoVpcB3478920
+      Tags:
+        - Key: kubernetes.io/role/elb
+          Value: "1"
+        - Key: Name
+          Value: eks-cicd-codebuild-stack/demo/Vpc/PublicSubnet3
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PublicSubnet3/RouteTable
+  demoVpcPublicSubnet3RouteTableAssociation5C913616:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: demoVpcPublicSubnet3RouteTable62FF7669
+      SubnetId:
+        Ref: demoVpcPublicSubnet3Subnet7B3157BB
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PublicSubnet3/RouteTableAssociation
+  demoVpcPublicSubnet3DefaultRoute740C28C9:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: demoVpcPublicSubnet3RouteTable62FF7669
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: demoVpcIGWFCF34DB8
+    DependsOn:
+      - demoVpcVPCGW0C6E1A88
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PublicSubnet3/DefaultRoute
+  demoVpcPrivateSubnet1Subnet79053A8E:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.96.0/19
+      VpcId:
+        Ref: demoVpcB3478920
+      AvailabilityZone: us-east-2a
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Private
+        - Key: aws-cdk:subnet-type
+          Value: Private
+        - Key: kubernetes.io/role/internal-elb
+          Value: "1"
+        - Key: Name
+          Value: eks-cicd-codebuild-stack/demo/Vpc/PrivateSubnet1
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PrivateSubnet1/Subnet
+  demoVpcPrivateSubnet1RouteTable3DB4667F:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: demoVpcB3478920
+      Tags:
+        - Key: kubernetes.io/role/internal-elb
+          Value: "1"
+        - Key: Name
+          Value: eks-cicd-codebuild-stack/demo/Vpc/PrivateSubnet1
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PrivateSubnet1/RouteTable
+  demoVpcPrivateSubnet1RouteTableAssociationD34EAECE:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: demoVpcPrivateSubnet1RouteTable3DB4667F
+      SubnetId:
+        Ref: demoVpcPrivateSubnet1Subnet79053A8E
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PrivateSubnet1/RouteTableAssociation
+  demoVpcPrivateSubnet1DefaultRoute18714FC3:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: demoVpcPrivateSubnet1RouteTable3DB4667F
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: demoVpcPublicSubnet1NATGateway80CECA1F
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PrivateSubnet1/DefaultRoute
+  demoVpcPrivateSubnet2SubnetCCC38380:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.128.0/19
+      VpcId:
+        Ref: demoVpcB3478920
+      AvailabilityZone: us-east-2b
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Private
+        - Key: aws-cdk:subnet-type
+          Value: Private
+        - Key: kubernetes.io/role/internal-elb
+          Value: "1"
+        - Key: Name
+          Value: eks-cicd-codebuild-stack/demo/Vpc/PrivateSubnet2
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PrivateSubnet2/Subnet
+  demoVpcPrivateSubnet2RouteTableFAEBF73C:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: demoVpcB3478920
+      Tags:
+        - Key: kubernetes.io/role/internal-elb
+          Value: "1"
+        - Key: Name
+          Value: eks-cicd-codebuild-stack/demo/Vpc/PrivateSubnet2
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PrivateSubnet2/RouteTable
+  demoVpcPrivateSubnet2RouteTableAssociationC5509642:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: demoVpcPrivateSubnet2RouteTableFAEBF73C
+      SubnetId:
+        Ref: demoVpcPrivateSubnet2SubnetCCC38380
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PrivateSubnet2/RouteTableAssociation
+  demoVpcPrivateSubnet2DefaultRoute613A1E7D:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: demoVpcPrivateSubnet2RouteTableFAEBF73C
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: demoVpcPublicSubnet1NATGateway80CECA1F
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PrivateSubnet2/DefaultRoute
+  demoVpcPrivateSubnet3Subnet76ED30A9:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.160.0/19
+      VpcId:
+        Ref: demoVpcB3478920
+      AvailabilityZone: us-east-2c
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Private
+        - Key: aws-cdk:subnet-type
+          Value: Private
+        - Key: kubernetes.io/role/internal-elb
+          Value: "1"
+        - Key: Name
+          Value: eks-cicd-codebuild-stack/demo/Vpc/PrivateSubnet3
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PrivateSubnet3/Subnet
+  demoVpcPrivateSubnet3RouteTableEE21B857:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: demoVpcB3478920
+      Tags:
+        - Key: kubernetes.io/role/internal-elb
+          Value: "1"
+        - Key: Name
+          Value: eks-cicd-codebuild-stack/demo/Vpc/PrivateSubnet3
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PrivateSubnet3/RouteTable
+  demoVpcPrivateSubnet3RouteTableAssociation531050ED:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: demoVpcPrivateSubnet3RouteTableEE21B857
+      SubnetId:
+        Ref: demoVpcPrivateSubnet3Subnet76ED30A9
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PrivateSubnet3/RouteTableAssociation
+  demoVpcPrivateSubnet3DefaultRoute4204F454:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: demoVpcPrivateSubnet3RouteTableEE21B857
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: demoVpcPublicSubnet1NATGateway80CECA1F
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/PrivateSubnet3/DefaultRoute
+  demoVpcIGWFCF34DB8:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: eks-cicd-codebuild-stack/demo/Vpc
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/IGW
+  demoVpcVPCGW0C6E1A88:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId:
+        Ref: demoVpcB3478920
+      InternetGatewayId:
+        Ref: demoVpcIGWFCF34DB8
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Vpc/VPCGW
+  demoClusterRole15ABAF36:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: eks.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/AmazonEKSClusterPolicy
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Cluster/Role/Resource
+  demoClusterControlPlaneSecurityGroupFC51CC8F:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: EKS Control Plane Security Group
+      SecurityGroupEgress:
+        - CidrIp: 0.0.0.0/0
+          Description: Allow all outbound traffic by default
+          IpProtocol: "-1"
+      VpcId:
+        Ref: demoVpcB3478920
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Cluster/ControlPlaneSecurityGroup/Resource
+  demoClusterCreationRole48B2C479:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - :iam::670390401516:root
+        Version: "2012-10-17"
+    DependsOn:
+      - demoVpcIGWFCF34DB8
+      - demoVpcPrivateSubnet1DefaultRoute18714FC3
+      - demoVpcPrivateSubnet1RouteTable3DB4667F
+      - demoVpcPrivateSubnet1RouteTableAssociationD34EAECE
+      - demoVpcPrivateSubnet1Subnet79053A8E
+      - demoVpcPrivateSubnet2DefaultRoute613A1E7D
+      - demoVpcPrivateSubnet2RouteTableFAEBF73C
+      - demoVpcPrivateSubnet2RouteTableAssociationC5509642
+      - demoVpcPrivateSubnet2SubnetCCC38380
+      - demoVpcPrivateSubnet3DefaultRoute4204F454
+      - demoVpcPrivateSubnet3RouteTableEE21B857
+      - demoVpcPrivateSubnet3RouteTableAssociation531050ED
+      - demoVpcPrivateSubnet3Subnet76ED30A9
+      - demoVpcPublicSubnet1DefaultRoute496F6A2B
+      - demoVpcPublicSubnet1EIP53B5E3EC
+      - demoVpcPublicSubnet1NATGateway80CECA1F
+      - demoVpcPublicSubnet1RouteTable4BCDF6B0
+      - demoVpcPublicSubnet1RouteTableAssociation7036D9B6
+      - demoVpcPublicSubnet1SubnetC6CE0160
+      - demoVpcPublicSubnet2DefaultRouteA4208AF0
+      - demoVpcPublicSubnet2RouteTableB4CC0633
+      - demoVpcPublicSubnet2RouteTableAssociation47E95421
+      - demoVpcPublicSubnet2SubnetDCB04C5F
+      - demoVpcPublicSubnet3DefaultRoute740C28C9
+      - demoVpcPublicSubnet3RouteTable62FF7669
+      - demoVpcPublicSubnet3RouteTableAssociation5C913616
+      - demoVpcPublicSubnet3Subnet7B3157BB
+      - demoVpcB3478920
+      - demoVpcVPCGW0C6E1A88
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Cluster/Resource/CreationRole/Resource
+  demoClusterCreationRoleDefaultPolicy063C7159:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: iam:PassRole
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - demoClusterRole15ABAF36
+                - Arn
+          - Action:
+              - eks:CreateCluster
+              - eks:DescribeCluster
+              - eks:DescribeUpdate
+              - eks:DeleteCluster
+              - eks:UpdateClusterVersion
+              - eks:UpdateClusterConfig
+              - eks:CreateFargateProfile
+              - eks:TagResource
+              - eks:UntagResource
+            Effect: Allow
+            Resource:
+              - "*"
+          - Action:
+              - eks:DescribeFargateProfile
+              - eks:DeleteFargateProfile
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - iam:GetRole
+              - iam:listAttachedRolePolicies
+            Effect: Allow
+            Resource: "*"
+          - Action: iam:CreateServiceLinkedRole
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - ec2:DescribeInstances
+              - ec2:DescribeNetworkInterfaces
+              - ec2:DescribeSecurityGroups
+              - ec2:DescribeSubnets
+              - ec2:DescribeRouteTables
+              - ec2:DescribeDhcpOptions
+              - ec2:DescribeVpcs
+            Effect: Allow
+            Resource: "*"
+        Version: "2012-10-17"
+      PolicyName: demoClusterCreationRoleDefaultPolicy063C7159
+      Roles:
+        - Ref: demoClusterCreationRole48B2C479
+    DependsOn:
+      - demoVpcIGWFCF34DB8
+      - demoVpcPrivateSubnet1DefaultRoute18714FC3
+      - demoVpcPrivateSubnet1RouteTable3DB4667F
+      - demoVpcPrivateSubnet1RouteTableAssociationD34EAECE
+      - demoVpcPrivateSubnet1Subnet79053A8E
+      - demoVpcPrivateSubnet2DefaultRoute613A1E7D
+      - demoVpcPrivateSubnet2RouteTableFAEBF73C
+      - demoVpcPrivateSubnet2RouteTableAssociationC5509642
+      - demoVpcPrivateSubnet2SubnetCCC38380
+      - demoVpcPrivateSubnet3DefaultRoute4204F454
+      - demoVpcPrivateSubnet3RouteTableEE21B857
+      - demoVpcPrivateSubnet3RouteTableAssociation531050ED
+      - demoVpcPrivateSubnet3Subnet76ED30A9
+      - demoVpcPublicSubnet1DefaultRoute496F6A2B
+      - demoVpcPublicSubnet1EIP53B5E3EC
+      - demoVpcPublicSubnet1NATGateway80CECA1F
+      - demoVpcPublicSubnet1RouteTable4BCDF6B0
+      - demoVpcPublicSubnet1RouteTableAssociation7036D9B6
+      - demoVpcPublicSubnet1SubnetC6CE0160
+      - demoVpcPublicSubnet2DefaultRouteA4208AF0
+      - demoVpcPublicSubnet2RouteTableB4CC0633
+      - demoVpcPublicSubnet2RouteTableAssociation47E95421
+      - demoVpcPublicSubnet2SubnetDCB04C5F
+      - demoVpcPublicSubnet3DefaultRoute740C28C9
+      - demoVpcPublicSubnet3RouteTable62FF7669
+      - demoVpcPublicSubnet3RouteTableAssociation5C913616
+      - demoVpcPublicSubnet3Subnet7B3157BB
+      - demoVpcB3478920
+      - demoVpcVPCGW0C6E1A88
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Cluster/Resource/CreationRole/DefaultPolicy/Resource
+  demoClusterE88BFFDC:
+    Type: Custom::AWSCDK-EKS-Cluster
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - awscdkawseksClusterResourceProviderNestedStackawscdkawseksClusterResourceProviderNestedStackResource9827C454
+          - Outputs.ekscicdcodebuildstackawscdkawseksClusterResourceProviderframeworkonEventF7D470EDArn
+      Config:
+        version: "1.21"
+        roleArn:
+          Fn::GetAtt:
+            - demoClusterRole15ABAF36
+            - Arn
+        resourcesVpcConfig:
+          subnetIds:
+            - Ref: demoVpcPublicSubnet1SubnetC6CE0160
+            - Ref: demoVpcPublicSubnet2SubnetDCB04C5F
+            - Ref: demoVpcPublicSubnet3Subnet7B3157BB
+            - Ref: demoVpcPrivateSubnet1Subnet79053A8E
+            - Ref: demoVpcPrivateSubnet2SubnetCCC38380
+            - Ref: demoVpcPrivateSubnet3Subnet76ED30A9
+          securityGroupIds:
+            - Fn::GetAtt:
+                - demoClusterControlPlaneSecurityGroupFC51CC8F
+                - GroupId
+          endpointPublicAccess: true
+          endpointPrivateAccess: true
+      AssumeRoleArn:
+        Fn::GetAtt:
+          - demoClusterCreationRole48B2C479
+          - Arn
+      AttributesRevision: 2
+    DependsOn:
+      - demoClusterCreationRoleDefaultPolicy063C7159
+      - demoClusterCreationRole48B2C479
+      - demoVpcIGWFCF34DB8
+      - demoVpcPrivateSubnet1DefaultRoute18714FC3
+      - demoVpcPrivateSubnet1RouteTable3DB4667F
+      - demoVpcPrivateSubnet1RouteTableAssociationD34EAECE
+      - demoVpcPrivateSubnet1Subnet79053A8E
+      - demoVpcPrivateSubnet2DefaultRoute613A1E7D
+      - demoVpcPrivateSubnet2RouteTableFAEBF73C
+      - demoVpcPrivateSubnet2RouteTableAssociationC5509642
+      - demoVpcPrivateSubnet2SubnetCCC38380
+      - demoVpcPrivateSubnet3DefaultRoute4204F454
+      - demoVpcPrivateSubnet3RouteTableEE21B857
+      - demoVpcPrivateSubnet3RouteTableAssociation531050ED
+      - demoVpcPrivateSubnet3Subnet76ED30A9
+      - demoVpcPublicSubnet1DefaultRoute496F6A2B
+      - demoVpcPublicSubnet1EIP53B5E3EC
+      - demoVpcPublicSubnet1NATGateway80CECA1F
+      - demoVpcPublicSubnet1RouteTable4BCDF6B0
+      - demoVpcPublicSubnet1RouteTableAssociation7036D9B6
+      - demoVpcPublicSubnet1SubnetC6CE0160
+      - demoVpcPublicSubnet2DefaultRouteA4208AF0
+      - demoVpcPublicSubnet2RouteTableB4CC0633
+      - demoVpcPublicSubnet2RouteTableAssociation47E95421
+      - demoVpcPublicSubnet2SubnetDCB04C5F
+      - demoVpcPublicSubnet3DefaultRoute740C28C9
+      - demoVpcPublicSubnet3RouteTable62FF7669
+      - demoVpcPublicSubnet3RouteTableAssociation5C913616
+      - demoVpcPublicSubnet3Subnet7B3157BB
+      - demoVpcB3478920
+      - demoVpcVPCGW0C6E1A88
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Cluster/Resource/Resource/Default
+  demoClusterKubectlReadyBarrier32816B55:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Type: String
+      Value: aws:cdk:eks:kubectl-ready
+    DependsOn:
+      - demoClusterCreationRoleDefaultPolicy063C7159
+      - demoClusterCreationRole48B2C479
+      - demoClusterE88BFFDC
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Cluster/KubectlReadyBarrier
+  demoClusterMastersRoleA48DAB1D:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - :iam::670390401516:root
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Cluster/MastersRole/Resource
+  demoClusterAwsAuthmanifestA20A74FB:
+    Type: Custom::AWSCDK-EKS-KubernetesResource
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - awscdkawseksKubectlProviderNestedStackawscdkawseksKubectlProviderNestedStackResourceA7AEBA6B
+          - Outputs.ekscicdcodebuildstackawscdkawseksKubectlProviderframeworkonEvent88193D4CArn
+      Manifest:
+        Fn::Join:
+          - ""
+          - - '[{"apiVersion":"v1","kind":"ConfigMap","metadata":{"name":"aws-auth","namespace":"kube-system","labels":{"aws.cdk.eks/prune-c87017d48a159852d6a9da96e68e0ef2379e2c06d9":""}},"data":{"mapRoles":"[{\"rolearn\":\"'
+            - Fn::GetAtt:
+                - demoClusterMastersRoleA48DAB1D
+                - Arn
+            - \",\"username\":\"
+            - Fn::GetAtt:
+                - demoClusterMastersRoleA48DAB1D
+                - Arn
+            - \",\"groups\":[\"system:masters\"]},{\"rolearn\":\"
+            - Fn::GetAtt:
+                - demoClusterNodegroupDefaultCapacityNodeGroupRoleA9E89914
+                - Arn
+            - \",\"username\":\"system:node:{{EC2PrivateDNSName}}\",\"groups\":[\"system:bootstrappers\",\"system:nodes\"]},{\"rolearn\":\"
+            - Fn::GetAtt:
+                - demoMyProjectRoleAD6F416A
+                - Arn
+            - \",\"username\":\"
+            - Fn::GetAtt:
+                - demoMyProjectRoleAD6F416A
+                - Arn
+            - \",\"groups\":[\"system:masters\"]}]","mapUsers":"[]","mapAccounts":"[]"}}]
+      ClusterName:
+        Ref: demoClusterE88BFFDC
+      RoleArn:
+        Fn::GetAtt:
+          - demoClusterCreationRole48B2C479
+          - Arn
+      PruneLabel: aws.cdk.eks/prune-c87017d48a159852d6a9da96e68e0ef2379e2c06d9
+      Overwrite: true
+    DependsOn:
+      - demoClusterKubectlReadyBarrier32816B55
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Cluster/AwsAuth/manifest/Resource/Default
+  demoClusterNodegroupDefaultCapacityNodeGroupRoleA9E89914:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/AmazonEKSWorkerNodePolicy
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/AmazonEKS_CNI_Policy
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Cluster/NodegroupDefaultCapacity/NodeGroupRole/Resource
+  demoClusterNodegroupDefaultCapacity6DAB3AA7:
+    Type: AWS::EKS::Nodegroup
+    Properties:
+      ClusterName:
+        Ref: demoClusterE88BFFDC
+      NodeRole:
+        Fn::GetAtt:
+          - demoClusterNodegroupDefaultCapacityNodeGroupRoleA9E89914
+          - Arn
+      Subnets:
+        - Ref: demoVpcPrivateSubnet1Subnet79053A8E
+        - Ref: demoVpcPrivateSubnet2SubnetCCC38380
+        - Ref: demoVpcPrivateSubnet3Subnet76ED30A9
+      AmiType: AL2_x86_64
+      ForceUpdateEnabled: true
+      InstanceTypes:
+        - t3.medium
+      ScalingConfig:
+        DesiredSize: 2
+        MaxSize: 2
+        MinSize: 2
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/Cluster/NodegroupDefaultCapacity/Resource
+  demoEcrRepo7CAA93F0:
+    Type: AWS::ECR::Repository
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/EcrRepo/Resource
+  demoCodeCommitRepo778B3D7E:
+    Type: AWS::CodeCommit::Repository
+    Properties:
+      RepositoryName: eks-cicd-codebuild-stack-repo
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/CodeCommitRepo/Resource
+  demoCodeCommitRepoOnCommitE35E53FE:
+    Type: AWS::Events::Rule
+    Properties:
+      EventPattern:
+        source:
+          - aws.codecommit
+        resources:
+          - Fn::GetAtt:
+              - demoCodeCommitRepo778B3D7E
+              - Arn
+        detail-type:
+          - CodeCommit Repository State Change
+        detail:
+          event:
+            - referenceCreated
+            - referenceUpdated
+      State: ENABLED
+      Targets:
+        - Arn:
+            Fn::GetAtt:
+              - demoMyProject02B76372
+              - Arn
+          Id: Target0
+          RoleArn:
+            Fn::GetAtt:
+              - demoMyProjectEventsRole7514578A
+              - Arn
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/CodeCommitRepo/OnCommit/Resource
+  demoMyProjectRoleAD6F416A:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/MyProject/Role/Resource
+  demoMyProjectRoleDefaultPolicy798C69F1:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: codecommit:GitPull
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - demoCodeCommitRepo778B3D7E
+                - Arn
+          - Action:
+              - ecr:BatchCheckLayerAvailability
+              - ecr:GetDownloadUrlForLayer
+              - ecr:BatchGetImage
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - :ecr:us-east-2:670390401516:repository/aws-cdk/assets
+          - Action: ecr:GetAuthorizationToken
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - :logs:us-east-2:670390401516:log-group:/aws/codebuild/
+                    - Ref: demoMyProject02B76372
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - :logs:us-east-2:670390401516:log-group:/aws/codebuild/
+                    - Ref: demoMyProject02B76372
+                    - :*
+          - Action:
+              - codebuild:CreateReportGroup
+              - codebuild:CreateReport
+              - codebuild:UpdateReport
+              - codebuild:BatchPutTestCases
+              - codebuild:BatchPutCodeCoverages
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - :codebuild:us-east-2:670390401516:report-group/
+                  - Ref: demoMyProject02B76372
+                  - -*
+          - Action:
+              - ecr:BatchCheckLayerAvailability
+              - ecr:GetDownloadUrlForLayer
+              - ecr:BatchGetImage
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - demoEcrRepo7CAA93F0
+                - Arn
+          - Action:
+              - ecr:PutImage
+              - ecr:InitiateLayerUpload
+              - ecr:UploadLayerPart
+              - ecr:CompleteLayerUpload
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - demoEcrRepo7CAA93F0
+                - Arn
+          - Action: eks:DescribeCluster
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - demoClusterE88BFFDC
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: demoMyProjectRoleDefaultPolicy798C69F1
+      Roles:
+        - Ref: demoMyProjectRoleAD6F416A
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/MyProject/Role/DefaultPolicy/Resource
+  demoMyProject02B76372:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: NO_ARTIFACTS
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        EnvironmentVariables:
+          - Name: CLUSTER_NAME
+            Type: PLAINTEXT
+            Value:
+              Ref: demoClusterE88BFFDC
+          - Name: ECR_REPO_URI
+            Type: PLAINTEXT
+            Value:
+              Fn::Join:
+                - ""
+                - - Fn::Select:
+                      - 4
+                      - Fn::Split:
+                          - ":"
+                          - Fn::GetAtt:
+                              - demoEcrRepo7CAA93F0
+                              - Arn
+                  - .dkr.ecr.
+                  - Fn::Select:
+                      - 3
+                      - Fn::Split:
+                          - ":"
+                          - Fn::GetAtt:
+                              - demoEcrRepo7CAA93F0
+                              - Arn
+                  - "."
+                  - Ref: AWS::URLSuffix
+                  - /
+                  - Ref: demoEcrRepo7CAA93F0
+        Image:
+          Fn::Join:
+            - ""
+            - - 670390401516.dkr.ecr.us-east-2.
+              - Ref: AWS::URLSuffix
+              - /aws-cdk/assets:077cb2e535b04454043ad370e3821c6d90f96a66fe0d650e16ccc35876b12a4f
+        ImagePullCredentialsType: SERVICE_ROLE
+        PrivilegedMode: true
+        Type: LINUX_CONTAINER
+      ServiceRole:
+        Fn::GetAtt:
+          - demoMyProjectRoleAD6F416A
+          - Arn
+      Source:
+        BuildSpec: |-
+          {
+            "version": "0.2",
+            "phases": {
+              "pre_build": {
+                "commands": [
+                  "env",
+                  "export TAG=${CODEBUILD_RESOLVED_SOURCE_VERSION}",
+                  "export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output=text)",
+                  "/usr/local/bin/entrypoint.sh",
+                  "echo Logging in to Amazon ECR",
+                  "aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com"
+                ]
+              },
+              "build": {
+                "commands": [
+                  "cd flask-docker-app",
+                  "docker build -t $ECR_REPO_URI:$TAG .",
+                  "docker push $ECR_REPO_URI:$TAG"
+                ]
+              },
+              "post_build": {
+                "commands": [
+                  "kubectl get no",
+                  "kubectl set image deployment flask-deployment flask=$ECR_REPO_URI:$TAG"
+                ]
+              }
+            }
+          }
+        Location:
+          Fn::GetAtt:
+            - demoCodeCommitRepo778B3D7E
+            - CloneUrlHttp
+        Type: CODECOMMIT
+      EncryptionKey: alias/aws/s3
+      Name: eks-cicd-codebuild-stack
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/MyProject/Resource
+  demoMyProjectEventsRole7514578A:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/MyProject/EventsRole/Resource
+  demoMyProjectEventsRoleDefaultPolicyA0F484CA:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: codebuild:StartBuild
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - demoMyProject02B76372
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: demoMyProjectEventsRoleDefaultPolicyA0F484CA
+      Roles:
+        - Ref: demoMyProjectEventsRole7514578A
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/demo/MyProject/EventsRole/DefaultPolicy/Resource
+  awscdkawseksClusterResourceProviderNestedStackawscdkawseksClusterResourceProviderNestedStackResource9827C454:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL:
+        Fn::Join:
+          - ""
+          - - https://s3.us-east-2.
+            - Ref: AWS::URLSuffix
+            - /
+            - Ref: AssetParameters4de9cd4867d87745896e40899537d5171fa1f11d758ef98888c181b3189579d9S3Bucket94423021
+            - /
+            - Fn::Select:
+                - 0
+                - Fn::Split:
+                    - "||"
+                    - Ref: AssetParameters4de9cd4867d87745896e40899537d5171fa1f11d758ef98888c181b3189579d9S3VersionKey8421A115
+            - Fn::Select:
+                - 1
+                - Fn::Split:
+                    - "||"
+                    - Ref: AssetParameters4de9cd4867d87745896e40899537d5171fa1f11d758ef98888c181b3189579d9S3VersionKey8421A115
+      Parameters:
+        referencetoekscicdcodebuildstackdemoClusterCreationRole0E62C3D4Arn:
+          Fn::GetAtt:
+            - demoClusterCreationRole48B2C479
+            - Arn
+        referencetoekscicdcodebuildstackAssetParameters50e10880d134a01b440991fc77d217f39f01c2d56945215ee9a3b81187c6f3b1S3Bucket4302AC7ERef:
+          Ref: AssetParameters50e10880d134a01b440991fc77d217f39f01c2d56945215ee9a3b81187c6f3b1S3Bucket36C546E0
+        referencetoekscicdcodebuildstackAssetParameters50e10880d134a01b440991fc77d217f39f01c2d56945215ee9a3b81187c6f3b1S3VersionKey606DE83FRef:
+          Ref: AssetParameters50e10880d134a01b440991fc77d217f39f01c2d56945215ee9a3b81187c6f3b1S3VersionKey85C003F9
+        referencetoekscicdcodebuildstackAssetParametersc691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49cS3BucketC28912D4Ref:
+          Ref: AssetParametersc691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49cS3BucketEAC9DD43
+        referencetoekscicdcodebuildstackAssetParametersc691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49cS3VersionKeyAFCAADD0Ref:
+          Ref: AssetParametersc691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49cS3VersionKeyDD9AE9E7
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/@aws-cdk--aws-eks.ClusterResourceProvider.NestedStack/@aws-cdk--aws-eks.ClusterResourceProvider.NestedStackResource
+  awscdkawseksKubectlProviderNestedStackawscdkawseksKubectlProviderNestedStackResourceA7AEBA6B:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL:
+        Fn::Join:
+          - ""
+          - - https://s3.us-east-2.
+            - Ref: AWS::URLSuffix
+            - /
+            - Ref: AssetParameters0e227474da0fac3d0abaf5e39c1b3643c047fc84901086ed450276ee3cd04421S3Bucket161910E2
+            - /
+            - Fn::Select:
+                - 0
+                - Fn::Split:
+                    - "||"
+                    - Ref: AssetParameters0e227474da0fac3d0abaf5e39c1b3643c047fc84901086ed450276ee3cd04421S3VersionKeyA32803D3
+            - Fn::Select:
+                - 1
+                - Fn::Split:
+                    - "||"
+                    - Ref: AssetParameters0e227474da0fac3d0abaf5e39c1b3643c047fc84901086ed450276ee3cd04421S3VersionKeyA32803D3
+      Parameters:
+        referencetoekscicdcodebuildstackdemoCluster8021BAACArn:
+          Fn::GetAtt:
+            - demoClusterE88BFFDC
+            - Arn
+        referencetoekscicdcodebuildstackdemoClusterCreationRole0E62C3D4Arn:
+          Fn::GetAtt:
+            - demoClusterCreationRole48B2C479
+            - Arn
+        referencetoekscicdcodebuildstackAssetParameters4129bbca38164ecb28fee8e5b674f0d05e5957b4b8ed97d9c950527b5cc4ce10S3BucketB903F03CRef:
+          Ref: AssetParameters4129bbca38164ecb28fee8e5b674f0d05e5957b4b8ed97d9c950527b5cc4ce10S3BucketC6FAEEC9
+        referencetoekscicdcodebuildstackAssetParameters4129bbca38164ecb28fee8e5b674f0d05e5957b4b8ed97d9c950527b5cc4ce10S3VersionKey1E9D8011Ref:
+          Ref: AssetParameters4129bbca38164ecb28fee8e5b674f0d05e5957b4b8ed97d9c950527b5cc4ce10S3VersionKeyA7EE7421
+        referencetoekscicdcodebuildstackdemoVpcPrivateSubnet1Subnet027092EBRef:
+          Ref: demoVpcPrivateSubnet1Subnet79053A8E
+        referencetoekscicdcodebuildstackdemoVpcPrivateSubnet2Subnet85D52A13Ref:
+          Ref: demoVpcPrivateSubnet2SubnetCCC38380
+        referencetoekscicdcodebuildstackdemoVpcPrivateSubnet3Subnet0902966BRef:
+          Ref: demoVpcPrivateSubnet3Subnet76ED30A9
+        referencetoekscicdcodebuildstackdemoCluster8021BAACClusterSecurityGroupId:
+          Fn::GetAtt:
+            - demoClusterE88BFFDC
+            - ClusterSecurityGroupId
+        referencetoekscicdcodebuildstackAssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68S3BucketDE4A6167Ref:
+          Ref: AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68S3BucketAEADE8C7
+        referencetoekscicdcodebuildstackAssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68S3VersionKey351B4806Ref:
+          Ref: AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68S3VersionKeyE415415F
+        referencetoekscicdcodebuildstackAssetParametersea17febe6d04c66048f3e8e060c71685c0cb53122abceff44842d27bc0d4a03eS3Bucket6CFC3053Ref:
+          Ref: AssetParametersea17febe6d04c66048f3e8e060c71685c0cb53122abceff44842d27bc0d4a03eS3BucketD3288998
+        referencetoekscicdcodebuildstackAssetParametersea17febe6d04c66048f3e8e060c71685c0cb53122abceff44842d27bc0d4a03eS3VersionKey372C93F8Ref:
+          Ref: AssetParametersea17febe6d04c66048f3e8e060c71685c0cb53122abceff44842d27bc0d4a03eS3VersionKeyB00C0565
+        referencetoekscicdcodebuildstackAssetParametersc691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49cS3BucketC28912D4Ref:
+          Ref: AssetParametersc691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49cS3BucketEAC9DD43
+        referencetoekscicdcodebuildstackAssetParametersc691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49cS3VersionKeyAFCAADD0Ref:
+          Ref: AssetParametersc691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49cS3VersionKeyDD9AE9E7
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/@aws-cdk--aws-eks.KubectlProvider.NestedStack/@aws-cdk--aws-eks.KubectlProvider.NestedStackResource
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Analytics: v2:deflate64:H4sIAAAAAAAA/3VRwW7CMAz9Fu4hrGjaruvYhNA0VpWJexpMCW3jKnFAqOq/L01Ly2UnPzvOe892xKNlxJ9mb+Jq5/JQLBqJBnizIyELtkJtyThJLAWLzkhgK2cJqyk96kf846h2xGJrgTxFrnTelQe2o06EERUQmJZ1gg3IJW/2teze9smKJS4rldy5TAOFjyNK0RH8iqyEqT7VvCBKJUihHps78LlJurAVtBYEV3FjiVEXDyfijfZ2PL439E6GLCbv/FSBJrYD6Yyi29qgq4OHx0LLoLC8WZV+PWBYfLWxoxP7clkgB/sttDqCJbbFA+R3jjFpmRIVb1Ls5wsxQb+LYKhHXkMa3wM1WkVobv32x2yC78JCy6Qnl1hViv7/5DkvfjpvPXWDtI9BaS66K1r+gbIAs6lEDuGugTdzqjzwJjF4Bhn2OMC2bZn2DfxsF5fomUev/GV2tkrNjdOkKuBpH/8AOOszLnoCAAA=
+    Metadata:
+      aws:cdk:path: eks-cicd-codebuild-stack/CDKMetadata/Default
+Outputs:
+  demoClusterConfigCommandAECCD31D:
+    Value:
+      Fn::Join:
+        - ""
+        - - "aws eks update-kubeconfig --name "
+          - Ref: demoClusterE88BFFDC
+          - " --region us-east-2 --role-arn "
+          - Fn::GetAtt:
+              - demoClusterMastersRoleA48DAB1D
+              - Arn
+  demoClusterGetTokenCommand10F8D7B1:
+    Value:
+      Fn::Join:
+        - ""
+        - - "aws eks get-token --cluster-name "
+          - Ref: demoClusterE88BFFDC
+          - " --region us-east-2 --role-arn "
+          - Fn::GetAtt:
+              - demoClusterMastersRoleA48DAB1D
+              - Arn
+  demoCodeCommitRepoName5AA2E6B2:
+    Value:
+      Fn::GetAtt:
+        - demoCodeCommitRepo778B3D7E
+        - Name
+  demoCodeCommitRepoArn31FA4803:
+    Value:
+      Fn::GetAtt:
+        - demoCodeCommitRepo778B3D7E
+        - Arn
+  demoCodeCommitCloneUrlSsh90360B87:
+    Value:
+      Fn::GetAtt:
+        - demoCodeCommitRepo778B3D7E
+        - CloneUrlSsh
+  demoCodeCommitCloneUrlHttp58F730B6:
+    Value:
+      Fn::GetAtt:
+        - demoCodeCommitRepo778B3D7E
+        - CloneUrlHttp
+Parameters:
+  AssetParameters50e10880d134a01b440991fc77d217f39f01c2d56945215ee9a3b81187c6f3b1S3Bucket36C546E0:
+    Type: String
+    Description: S3 bucket for asset "50e10880d134a01b440991fc77d217f39f01c2d56945215ee9a3b81187c6f3b1"
+  AssetParameters50e10880d134a01b440991fc77d217f39f01c2d56945215ee9a3b81187c6f3b1S3VersionKey85C003F9:
+    Type: String
+    Description: S3 key for asset version "50e10880d134a01b440991fc77d217f39f01c2d56945215ee9a3b81187c6f3b1"
+  AssetParameters50e10880d134a01b440991fc77d217f39f01c2d56945215ee9a3b81187c6f3b1ArtifactHash32F5D823:
+    Type: String
+    Description: Artifact hash for asset "50e10880d134a01b440991fc77d217f39f01c2d56945215ee9a3b81187c6f3b1"
+  AssetParametersc691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49cS3BucketEAC9DD43:
+    Type: String
+    Description: S3 bucket for asset "c691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49c"
+  AssetParametersc691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49cS3VersionKeyDD9AE9E7:
+    Type: String
+    Description: S3 key for asset version "c691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49c"
+  AssetParametersc691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49cArtifactHash627DAAA7:
+    Type: String
+    Description: Artifact hash for asset "c691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49c"
+  AssetParameters4129bbca38164ecb28fee8e5b674f0d05e5957b4b8ed97d9c950527b5cc4ce10S3BucketC6FAEEC9:
+    Type: String
+    Description: S3 bucket for asset "4129bbca38164ecb28fee8e5b674f0d05e5957b4b8ed97d9c950527b5cc4ce10"
+  AssetParameters4129bbca38164ecb28fee8e5b674f0d05e5957b4b8ed97d9c950527b5cc4ce10S3VersionKeyA7EE7421:
+    Type: String
+    Description: S3 key for asset version "4129bbca38164ecb28fee8e5b674f0d05e5957b4b8ed97d9c950527b5cc4ce10"
+  AssetParameters4129bbca38164ecb28fee8e5b674f0d05e5957b4b8ed97d9c950527b5cc4ce10ArtifactHash528547CD:
+    Type: String
+    Description: Artifact hash for asset "4129bbca38164ecb28fee8e5b674f0d05e5957b4b8ed97d9c950527b5cc4ce10"
+  AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68S3BucketAEADE8C7:
+    Type: String
+    Description: S3 bucket for asset "e9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68"
+  AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68S3VersionKeyE415415F:
+    Type: String
+    Description: S3 key for asset version "e9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68"
+  AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68ArtifactHashD9A515C3:
+    Type: String
+    Description: Artifact hash for asset "e9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68"
+  AssetParametersea17febe6d04c66048f3e8e060c71685c0cb53122abceff44842d27bc0d4a03eS3BucketD3288998:
+    Type: String
+    Description: S3 bucket for asset "ea17febe6d04c66048f3e8e060c71685c0cb53122abceff44842d27bc0d4a03e"
+  AssetParametersea17febe6d04c66048f3e8e060c71685c0cb53122abceff44842d27bc0d4a03eS3VersionKeyB00C0565:
+    Type: String
+    Description: S3 key for asset version "ea17febe6d04c66048f3e8e060c71685c0cb53122abceff44842d27bc0d4a03e"
+  AssetParametersea17febe6d04c66048f3e8e060c71685c0cb53122abceff44842d27bc0d4a03eArtifactHash4654D012:
+    Type: String
+    Description: Artifact hash for asset "ea17febe6d04c66048f3e8e060c71685c0cb53122abceff44842d27bc0d4a03e"
+  AssetParameters4de9cd4867d87745896e40899537d5171fa1f11d758ef98888c181b3189579d9S3Bucket94423021:
+    Type: String
+    Description: S3 bucket for asset "4de9cd4867d87745896e40899537d5171fa1f11d758ef98888c181b3189579d9"
+  AssetParameters4de9cd4867d87745896e40899537d5171fa1f11d758ef98888c181b3189579d9S3VersionKey8421A115:
+    Type: String
+    Description: S3 key for asset version "4de9cd4867d87745896e40899537d5171fa1f11d758ef98888c181b3189579d9"
+  AssetParameters4de9cd4867d87745896e40899537d5171fa1f11d758ef98888c181b3189579d9ArtifactHash0DD06634:
+    Type: String
+    Description: Artifact hash for asset "4de9cd4867d87745896e40899537d5171fa1f11d758ef98888c181b3189579d9"
+  AssetParameters0e227474da0fac3d0abaf5e39c1b3643c047fc84901086ed450276ee3cd04421S3Bucket161910E2:
+    Type: String
+    Description: S3 bucket for asset "0e227474da0fac3d0abaf5e39c1b3643c047fc84901086ed450276ee3cd04421"
+  AssetParameters0e227474da0fac3d0abaf5e39c1b3643c047fc84901086ed450276ee3cd04421S3VersionKeyA32803D3:
+    Type: String
+    Description: S3 key for asset version "0e227474da0fac3d0abaf5e39c1b3643c047fc84901086ed450276ee3cd04421"
+  AssetParameters0e227474da0fac3d0abaf5e39c1b3643c047fc84901086ed450276ee3cd04421ArtifactHash2A7281BC:
+    Type: String
+    Description: Artifact hash for asset "0e227474da0fac3d0abaf5e39c1b3643c047fc84901086ed450276ee3cd04421"
+

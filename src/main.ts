@@ -15,8 +15,9 @@ export class Demo extends cdk.Construct {
     const vpc = getOrCreateVpc(this);
     const cluster = new eks.Cluster(this, 'Cluster', {
       vpc,
-      version: eks.KubernetesVersion.V1_20,
+      version: eks.KubernetesVersion.V1_21,
       defaultCapacity: 2,
+      defaultCapacityInstance: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MEDIUM),
     });
 
     const stackName = cdk.Stack.of(this).stackName;
@@ -95,7 +96,7 @@ export class Demo extends cdk.Construct {
 const app = new cdk.App();
 
 const env = {
-  region: process.env.CDK_DEFAULT_REGION || 'us-east-1',
+  region: process.env.CDK_DEFAULT_REGION || 'us-east-2',
   account: process.env.CDK_DEFAULT_ACCOUNT,
 };
 
